@@ -3,7 +3,7 @@ import DayList from "./DayList";
 import Appointment from "./Appointment";
 import "./Application.scss";
 
-const { getAppointmentsForDay } = require('../helpers/selectors')
+const { getAppointmentsForDay, getInterview, getInterviewersForDay } = require('../helpers/selectors')
 const axios = require('axios');
 
 
@@ -11,23 +11,25 @@ export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    appointments: {}
+    appointments: {},
+    interviewers: {}
   });
-
   const setDay = day => setState({ ...state, day });
-  const appointments = getAppointmentsForDay(state, state.day)
-
+  //console.log("appoint", appointments)
   useEffect(() => {
     Promise.all([
       axios.get('http://localhost:8001/api/days'),
-      axios.get('http://localhost:8001/api/appointments')
+      axios.get('http://localhost:8001/api/appointments'),
+      axios.get('http://localhost:8001/api/interviewers')
+
     ]).then((all) => {
-      const [daysResponse, appointmentsResponse] = all;
-      setState(prev => ({ days: daysResponse.data, appointments: appointmentsResponse.data }));
-      console.log(daysResponse, appointmentsResponse);
+      const [daysResponse, appointmentsResponse, interviewersResponse] = all;
+      setState(prev => ({ ...prev, days: daysResponse.data, appointments: appointmentsResponse.data, interviewers: interviewersResponse.data }));
     });
   }, [])
 
+  const appointments = getAppointmentsForDay(state, state.day)
+  const interviewers =getInterviewersForDay(state, state.day)
   return (
     <main className="layout">
       <section className="sidebar">
@@ -47,15 +49,17 @@ export default function Application(props) {
 
       </section>
       <section className="schedule">
-        {appointments.map(appointment => (
-
-          <Appointment
+        {appointments.map((appointment) => {
+          const interview = getInterview(state, appointment.interview)
+          return <Appointment
             id={appointment.id}
             time={appointment.time}
-            interview={appointment.interview}
-
+            interview={interview}
+            key={appointment.id}
+            interviewers = {interviewers}
           />
-        ))}
+        })}
+        <Appointment key="last" time="5pm"  />
       </section>
     </main>
   );
