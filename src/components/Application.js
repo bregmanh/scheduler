@@ -1,35 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
 import "./Application.scss";
+import useApplicationData from '../hooks/useApplicationData.js'
 
 const { getAppointmentsForDay, getInterview, getInterviewersForDay } = require('../helpers/selectors')
-const axios = require('axios');
 
 
 export default function Application(props) {
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {},
-    interviewers: {}
-  });
-  const setDay = day => setState({ ...state, day });
-  //console.log("appoint", appointments)
-  useEffect(() => {
-    Promise.all([
-      axios.get('http://localhost:8001/api/days'),
-      axios.get('http://localhost:8001/api/appointments'),
-      axios.get('http://localhost:8001/api/interviewers')
+  const {
+    state,
+    setDay,
+    bookInterview,
+    cancelInterview
+  } = useApplicationData();
 
-    ]).then((all) => {
-      const [daysResponse, appointmentsResponse, interviewersResponse] = all;
-      setState(prev => ({ ...prev, days: daysResponse.data, appointments: appointmentsResponse.data, interviewers: interviewersResponse.data }));
-    });
-  }, [])
 
   const appointments = getAppointmentsForDay(state, state.day)
-  const interviewers =getInterviewersForDay(state, state.day)
+  const interviewers = getInterviewersForDay(state, state.day)
   return (
     <main className="layout">
       <section className="sidebar">
@@ -56,10 +44,13 @@ export default function Application(props) {
             time={appointment.time}
             interview={interview}
             key={appointment.id}
-            interviewers = {interviewers}
+            interviewers={interviewers}
+            bookInterview={bookInterview}
+            cancelInterview={cancelInterview}
+
           />
         })}
-        <Appointment key="last" time="5pm"  />
+        <Appointment key="last" time="5pm" />
       </section>
     </main>
   );
