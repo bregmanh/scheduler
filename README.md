@@ -20,7 +20,7 @@ Both servers run concurrently; requests are proxied from the Webpack development
 
 Below is an illustration of some of the main app functionalities. The full list of functionaities is provided in the next section.
 
-[GIF illustration of the main functionalities](https://github.com/bregmanh/scheduler/blob/master/docs/overview.gif?raw=true)
+![GIF illustration of the main functionalities](https://github.com/bregmanh/scheduler/blob/master/docs/overview.gif?raw=true)
 
 ## Functionalities
 
