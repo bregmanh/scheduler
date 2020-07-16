@@ -1,5 +1,5 @@
 # Interview Scheduler
-A modern client application using the React view library, [click here](https://silly-brown-56f820.netlify.app/) to view the project live.
+A modern client application using the React view library, [click here](https://silly-brown-56f820.netlify.app/) to view the project live (*note: do allow a few second for the server to warm up).
 
 The Interview Scheduler allows students to book appointments with a mentor. Appointments can be made between noon and 5pm for each day of the week. Students can create appointments by specifying their name and choose from a list of interviewers. Students can also cancel and edit appointments.
 
