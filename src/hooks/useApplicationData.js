@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { configureActions } from "@storybook/addon-actions/dist/preview";
 import axios from "axios";
 axios.defaults.baseURL = `http://localhost:8001`;
 
