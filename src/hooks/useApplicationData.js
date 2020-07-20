@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 axios.defaults.baseURL = `http://localhost:8001`;
 
-export default function useVisualMode(initial, replace = false) {
+export default function useApplicationData() {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
@@ -10,12 +10,17 @@ export default function useVisualMode(initial, replace = false) {
     interviewers: {},
   });
 
-  const numberSpots = function (currentDay) {
-    for (let d of state.days) {
-      if (d.name === currentDay) {
-        return d.spots;
+  const updateDaySpots = function (day, newState) {
+    let spots = 0;
+    let appointment_arr = day.appointments;
+    console.log("day",day)
+    for (let app_id of appointment_arr) {
+      if (newState.appointments[app_id].interview === null) {
+        spots += 1;
       }
     }
+    const newDay = { ...day, spots: spots };
+    return newDay;
   };
 
   const getDayId = (appointmentId) => {
@@ -48,25 +53,19 @@ export default function useVisualMode(initial, replace = false) {
         interview,
       })
       .then(() => {
-        let spotCounter = numberSpots(state.day) - 1;
+        const newStateAppointments = {...state, appointments}
+        const newDays = [...state.days].map(day => updateDaySpots(day, newStateAppointments))
+        const newState = { ...newStateAppointments, days: newDays }
+        setState(newState)
+    
 
-        const dayChange = {
-          ...state.days[getDayId(id)],
-          spots: spotCounter,
-        };
-        state.days[getDayId(id)] = dayChange;
-
-        setState({
-          ...state,
-          appointments,
-        });
       });
   }
 
   function cancelInterview(id) {
     const appointment = {
       ...state.appointments[id],
-      interview: { ...null },
+      interview: null,
     };
     const appointments = {
       ...state.appointments,
@@ -77,17 +76,10 @@ export default function useVisualMode(initial, replace = false) {
       .delete(`/api/appointments/${id}`)
 
       .then(() => {
-        let spotCounter = numberSpots(state.day) + 1;
-
-        const dayChange = {
-          ...state.days[getDayId(id)],
-          spots: spotCounter,
-        };
-        state.days[getDayId(id)] = dayChange;
-        setState({
-          ...state,
-          appointments,
-        });
+        const newStateAppointments = {...state, appointments}
+        const newDays = [...state.days].map(day => updateDaySpots(day, newStateAppointments))
+        const newState = { ...newStateAppointments, days: newDays }
+        setState(newState)
       });
   }
   useEffect(() => {
