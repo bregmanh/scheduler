@@ -5,13 +5,11 @@ import {
   waitForElement,
   fireEvent,
   getByText,
-  prettyDOM,
   getByDisplayValue,
   getAllByTestId,
   queryByText,
   getByPlaceholderText,
   getByAltText,
-  getByTestId,
 } from "@testing-library/react";
 import Application from "components/Application";
 import axios from "axios";
@@ -69,7 +67,7 @@ describe("Application", () => {
     const day = getAllByTestId(container, "day").find((day) =>
       queryByText(day, "Monday")
     );
-    expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
+    expect(getByText(day, "2 spots remaining")).toBeInTheDocument();
   });
 
   it("loads data, edits an interview and keeps the spots remaining for Monday the same", async () => {

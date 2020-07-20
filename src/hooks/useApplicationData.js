@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-axios.defaults.baseURL = `http://localhost:8001`;
 
 export default function useApplicationData() {
   const [state, setState] = useState({
@@ -23,19 +22,6 @@ export default function useApplicationData() {
     return newDay;
   };
 
-  const getDayId = (appointmentId) => {
-    if (appointmentId / 5 <= 1) {
-      return 0;
-    } else if (appointmentId / 5 <= 2) {
-      return 1;
-    } else if (appointmentId / 5 <= 3) {
-      return 2;
-    } else if (appointmentId / 5 <= 4) {
-      return 3;
-    } else {
-      return 4;
-    }
-  };
   const setDay = (day) => setState({ ...state, day });
 
   function bookInterview(id, interview) {
